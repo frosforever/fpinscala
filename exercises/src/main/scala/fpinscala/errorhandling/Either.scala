@@ -6,17 +6,17 @@ import scala.{Option => _, Either => _, Left => _, Right => _, _} // hide std li
 sealed trait Either[+E,+A] {
  def map[B](f: A => B): Either[E, B] = this match {
    case Right(a) => Right(f(a))
-   case _ => _
+   case Left(e) => Left(e)
  }
 
  def flatMap[EE >: E, B](f: A => Either[EE, B]): Either[EE, B] = this match {
    case Right(a) => f(a)
-   case _ => _
+   case Left(e) => Left(e)
  }
 
  def orElse[EE >: E, B >: A](b: => Either[EE, B]): Either[EE, B] = this match {
    case Left(_) => b
-   case _ => _
+   case Right(r) => Right(r)
  }
 
  def map2[EE >: E, B, C](b: Either[EE, B])(f: (A, B) => C): Either[EE, C] =
